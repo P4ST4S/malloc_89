@@ -1,0 +1,9 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+    "files.associations": {
+        "stddef.h": "c",
+        "malloc.h": "c",
+        "block_struct.h": "c",
+        "unistd.h": "c"
+    }
+}
