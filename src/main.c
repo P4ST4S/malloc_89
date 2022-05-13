@@ -18,7 +18,7 @@ int try(int input, int wanted)
     if (input != wanted)
         printf("\x1B[31mFAIL\033[0m\n");
     else
-        printf("\x1B[32mFAIL\033[0m\n");
+        printf("\x1B[32mOK\033[0m\n");
     return (input == wanted);
 }
 
