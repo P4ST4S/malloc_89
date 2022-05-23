@@ -13,29 +13,24 @@
 #include <assert.h>
 #include <stdio.h>
 
-int try(int input, int wanted)
-{
-    if (input != wanted)
-        printf("\x1B[31mFAIL\033[0m\n");
-    else
-        printf("\x1B[32mFAIL\033[0m\n");
-    return (input == wanted);
-}
-
 int main(void)
 {
-    int *ints;
-    void *pos;
-    int i;
+    char *str = malloc(10);
 
-    pos = sbrk(0);
-    for (i = 0; i <= 10005; i++)
-    {
-        ints = malloc(4 * 1000 * sizeof(int));
-        free(ints);
-        printf("sbrk(0) == pos : ");
-        if (!try(sbrk(0) == ints, 1))
-            printf("sbrk(%p) != pos(%p)\n", sbrk(0), pos);
-    }
+    str[0] = 'B';
+    str[1] = 'o';
+    str[2] = 'n';
+    str[3] = 'j';
+    str[4] = 'o';
+    str[5] = 'u';
+    str[6] = 'r';
+    str[7] = ' ';
+    str[8] = ' ';
+    str[9] = ' ';
+    str[10] = ' ';
+    str[11] = ' ';
+
+    printf("%s\n", str);
+    free(str);
     return (0);
 }

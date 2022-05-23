@@ -17,8 +17,8 @@
 
 void std_memcpy(void *dest, void *src, size_t n);
 
-#define ALIGNONFOUR(x) (((((x)-1) >> 2) << 2) + 4)
-#define BLOCK_SIZE 20
+// #define ALIGNONFOUR(x) (((((x)-1) >> 2) << 2) + 4)
+#define ALIGNONEIGHT(x) ((x + 7) & (-8))
 
 typedef struct s_block
 {
@@ -30,6 +30,7 @@ typedef struct s_block
     char data[1];
 } t_block;
 
+#define BLOCK_SIZE sizeof(t_block)
 #define OVERHEADBLOCK (2 * sizeof(size_t))
 #define BLOCKSIZE(block) ((block)->size & -2)
 #define MEMOFBLOCK(ptr) (struct s_block *)((char *)(ptr)-OVERHEADBLOCK)

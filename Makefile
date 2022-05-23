@@ -1,18 +1,15 @@
-#########################################################
-# @ Author: Antoine ROSPARS								#
-# @ Create Time: 2022-02-19 17:07:57					#
-# @ Modified by: Antoine ROSPARS						#
-# @ Modified time: 2022-02-19 17:13:24					#
-# @ Copyright: © Antoine ROSPARS - All Rights Reserved.	#
-#########################################################
-
 CC = gcc
-EXEC = bsh
+NAME = malloc
 SRC = $(shell find ./ -name "*.c")
 OBJ = $(SRC:.c=.o)
 ECHO = /bin/echo -e
-FLAG = -I./include/ -I./include/malloc_function -I./include/lib/  -g -g3 -W -Wall -Werror
-LIB = -llapin -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system -lstdc++ -lm -ldl -lpthread -lopencv_imgproc -lopencv_objdetect -lopencv_video -lopencv_core -lavcall -lusb -std=c11
+
+INCLUDE = 	-I./include/					\
+			-I./include/malloc_function/	\
+			-I./include/lib/ 
+LFLAGS = -llapin -lsfml-graphics -lsfml-audio -lsfml-window -lsfml-system -lstdc++ -lm -ldl -lpthread -lopencv_imgproc -lopencv_objdetect -lopencv_video -lopencv_core -lavcall -lusb -std=c11
+DEBUG = -g -g3
+CFLAGS = -W -Wall -Werror
 
 DEFLT	=	"\033[00m"
 PINK	=	"\033[0;36m"
@@ -22,34 +19,42 @@ RED		=	"\033[0;31m"
 BLINK 	= 	"\033[1;92m"
 SBLINK	= 	"\033[0m"
 
-all:$(EXEC)
+all:	full libmalloc.so
 
-build :		$(ECHO) $(BLINK) "[SUCCESS]" $(DEFLT)
+full:	$(NAME) 
+		@ $(ECHO) $(GREEN) "[BUILD]" $(DEFLT) $(PINK) $(NAME) $(DEFLT)
 
 %.o : %.c
-	@ $(CC) -o $@ -c $< $(FLAG) && \
-	$(ECHO) $(BLINK) "[OK]"$(SBLINK) $(PINK) $< $(DEFLT) || \
-	$(ECHO) $(RED) "[KO]" $(PINK) $< $(DEFLT)
+		@ $(CC) -o $@ -c $< $(INCLUDE) $(DEBUG) $(CFLAGS) && \
+		$(ECHO) $(BLINK) "[OK]"$(SBLINK) $(PINK) $< $(DEFLT) || \
+		$(ECHO) $(RED) "[KO]" $(PINK) $< $(DEFLT)
 
-lib:
-	@ $(CC) -o $@ -c $< $(FLAG) $(LIB) && \
-	$(ECHO) $(BLINK) "[OK]"$(SBLINK) $(PINK) $< $(DEFLT) || \
-	$(ECHO) $(RED) "[KO]" $(PINK) $< $(DEFLT)
+libmalloc.so: $(SRC)
+		@ $(CC) $(INCLUDE) $(SRC) -o libmalloc.so -fPIC -shared 
 
-$(EXEC):$(OBJ)
-	@ $(CC) -o $@ $^ $(FLAG) && \
-	$(ECHO) $(BLINK) "[OK]"$(SBLINK) $(PINK) $< $(DEFLT) || \
-	$(ECHO) $(RED) "[KO - OBJECT]" $(TEAL) $< $(DEFLT)
+$(NAME):$(OBJ)
+		@ $(CC) -o $@ $^ && \
+		$(ECHO) $(BLINK) "[OK]"$(SBLINK) $(PINK) $< $(DEFLT) || \
+		$(ECHO) $(RED) "[KO - OBJECT]" $(TEAL) $< $(DEFLT)
 
 clean:
-	@ find -name "*.o" -delete && find -name "*~" -delete && \
-	$(ECHO) $(BLINK) "[CLEAN SUCCESS]" $(DEFLT)
+		@ find -name "*.o" -delete && find -name "*~" -delete && \
+		$(ECHO) $(BLINK) "[CLEAN SUCCESS]" $(DEFLT) || \
+		$(ECHO) $(RED) "[CLEAN ERROR]" $(DEFLT)
 
 fclean:
-	@ find -name "*.o" -delete ; find -name "*~" -delete ; rm $(EXEC); \
-	$(ECHO) $(BLINK) "[FCLEAN SUCCESS]" $(DEFLT)
+		@ find -name "*.o" -delete 
+		@ find -name "*~" -delete 
+		@ rm $(NAME)
+		@ rm libmalloc.so && \
+		$(ECHO) $(BLINK) "[FCLEAN SUCCESS]" $(DEFLT) || \
+		$(ECHO) $(RED) "[FCLEAN ERROR]" $(DEFLT)
 
-re: 	clean all
 
-run: $(OUT)
-	./$(OUT)
+re: 	fclean all
+
+run: 	$(NAME)
+		@ $(ECHO) $(GREEN) "[RUNNING]" $(DEFLT) $(PINK) $(NAME) $(DEFLT)
+		@ ./$(NAME)
+
+.PHONY: $(CUSTLIBS)

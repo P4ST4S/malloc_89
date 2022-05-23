@@ -10,6 +10,7 @@
  */
 
 #include "malloc.h"
+#include <stdio.h>
 #include <unistd.h>
 
 void *base = NULL;
@@ -86,26 +87,12 @@ int valid_addr(void *ptr)
     return (0);
 }
 
-// void copy_block(t_block *src, t_block *dest)
-// {
-//     int *srcData, *destData;
-//     size_t loop = 0;
-
-//     srcData = src->ptr;
-//     destData = dest->ptr;
-//     while (loop * 4 < src->size && loop * 4 < dest->size)
-//     {
-//         destData[loop] = srcData[loop];
-//         loop++;
-//     }
-// }
-
 void *malloc(size_t size)
 {
     t_block *block, *last;
     size_t s;
 
-    s = ALIGNONFOUR(size);
+    s = ALIGNONEIGHT(size);
     if (base)
     {
         last = base;
@@ -164,7 +151,7 @@ void *calloc(size_t nmemb, size_t size)
     new = malloc(nmemb * size);
     if (new)
     {
-        s4 = ALIGNONFOUR(nmemb * size) << 2;
+        s4 = ALIGNONEIGHT(nmemb * size) << 2;
         while (loop < s4)
             new[loop++] = 0;
     }
